@@ -6,24 +6,53 @@ import { navigate } from './navigation.js';
 const app = document.getElementById('app');
 
 const kpis = [
-  { pill: 'Reliability', value: '99.98%', label: 'Fleet uptime across monitored assets', trend: '+0.3% this week' },
-  { pill: 'Predictive maintenance', value: '126', label: 'Anomalies intercepted before downtime', trend: '+18% MoM' },
-  { pill: 'Energy management', value: '14.2%', label: 'Load trimmed during peak windows', trend: '-1.2MW shaved' },
-  { pill: 'Digital twins', value: '24', label: 'Production twins synchronized and ready', trend: '+4 new NPI models' }
+  { title: 'HVAC Fleet Health', value: '92%', label: 'Fleet uptime across monitored assets', trend: '+1.2% from last month', direction: 'up' },
+  { title: 'Energy Savings (Mo.)', value: '$1,250', label: 'Energy trimmed from tariff windows', trend: '+210 vs last month', direction: 'up' },
+  { title: 'Comfort Index', value: '98%', label: 'Environmental quality across sites', trend: '-0.5% from last month', direction: 'down' },
+  { title: 'Open Actions', value: '3', label: 'Operational follow-ups', trend: '1 high priority', direction: 'neutral' }
 ];
 
-const signalCards = [
-  { title: 'Agent Builder', value: '8 copilots live', tag: 'Shift-ready assistance', status: 'healthy' },
-  { title: 'Predictive Maintenance', value: '126 events auto-routed', tag: '12 assets guarded', status: 'healthy' },
-  { title: 'Energy Management', value: '14.2% load relief', tag: 'DR-ready', status: 'watch' },
-  { title: 'Digital Twin Simulator', value: '24 twins synced', tag: 'Scenario lab', status: 'healthy' }
-];
-
-const activityFeed = [
-  { title: 'Compressor 7 anomaly contained', detail: 'Predictive Maintenance • SLA 3m', tag: 'Line 12' },
-  { title: 'Load shift executed for tariff window', detail: 'Energy Management • Demand response', tag: 'Grid ops' },
-  { title: 'Digital twin rehearsal approved', detail: 'Digital Twin Simulator • Runbook 4', tag: 'NPI' },
-  { title: 'Agent Builder published new SOP', detail: 'Industrial AI Agent Builder • Shift A', tag: 'Line 5' }
+const fleetAssets = [
+  {
+    name: 'Empty Can Conveyor',
+    location: 'San Francisco Line 1',
+    status: 'Running',
+    service: 'Agent Builder',
+    serviceSlug: 'industrial-ai-agent-builder',
+    model: 'Custom GLB Model',
+    stats: { efficiency: '96%', temp: '42°C', vibration: '1.8', rul: '720h' },
+    signal: 'Normal'
+  },
+  {
+    name: 'Depalletizer #1',
+    location: 'San Francisco Line 1',
+    status: 'Running',
+    service: 'Predictive Maintenance',
+    serviceSlug: 'predictive-maintenance',
+    model: 'Custom GLB Model',
+    stats: { efficiency: '92%', temp: '68°C', vibration: '2.3', rul: '485h' },
+    signal: 'Normal'
+  },
+  {
+    name: 'Packer #2',
+    location: 'San Francisco Line 1',
+    status: 'Running',
+    service: 'Digital Twin Simulator',
+    serviceSlug: 'digital-twin-simulator',
+    model: 'Custom GLB Model',
+    stats: { efficiency: '94%', temp: '55°C', vibration: '1.9', rul: '580h' },
+    signal: 'Warning'
+  },
+  {
+    name: 'Boiler Loop',
+    location: 'Austin Energy Pod',
+    status: 'Running',
+    service: 'Energy Management',
+    serviceSlug: 'energy-management',
+    model: 'Custom GLB Model',
+    stats: { efficiency: '91%', temp: '38°C', vibration: '1.4', rul: '640h' },
+    signal: 'Normal'
+  }
 ];
 
 const serviceSignals = {
@@ -89,45 +118,25 @@ function renderServiceGrid(compact = false) {
 
 function renderHero() {
   return `
-    <section class="hero dashboard-hero">
-      <div class="hero-copy">
-        <div class="badge-row">
-          <span class="badge">Command dashboard</span>
-          <span class="badge">Audit-ready</span>
-          <span class="badge">Cross-domain AI</span>
+    <section class="hero">
+      <div class="section-title" style="align-items:flex-start;">
+        <div>
+          <div class="badge-row">
+            <span class="badge">Pulse Dashboard</span>
+            <span class="badge">Black & White</span>
+          </div>
+          <h1>Real-time system management for Agent Builder, Digital Twins, Predictive Maintenance, and Energy Management.</h1>
+          <p>Demo-ready dashboard with synthetic signals across services, sites, and assets—aligned to the reference layout.</p>
         </div>
-        <h1>Run Agent Builder, Digital Twins, predictive maintenance, and energy automation from one pane.</h1>
-        <p>Sync.ai blends reliability, quality, and energy orchestration into a single control surface with guardrails, observability, and playbooks that ship with every engagement.</p>
-        <div class="actions">
-          <button class="button" onclick="window.navigate('/services')">Launch services</button>
-          <button class="button ghost" onclick="window.navigate('/pulse')">View Pulse platform</button>
-        </div>
-        <div class="stacked">
-          <span class="chip"><span class="dot"></span>Live guardrails enabled</span>
-          <span class="chip"><span class="dot"></span>Last sync: 2m ago</span>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <div class="service-meta">
-          <h4>Live control signals</h4>
-          <span class="pill"><span class="dot"></span>Healthy</span>
-        </div>
-        <div class="signal-grid">
-          ${signalCards
-            .map(
-              (card) => `
-                <div class="signal-card">
-                  <div class="service-meta">
-                    <span class="status ${card.status === 'watch' ? 'warning' : ''}">
-                      <span class="dot"></span>${card.title}
-                    </span>
-                    <span class="light">${card.tag}</span>
-                  </div>
-                  <strong>${card.value}</strong>
-                </div>
-              `
-            )
-            .join('')}
+        <div class="toolbar">
+          <select class="select" aria-label="Select site">
+            <option>All Sites</option>
+            <option>San Francisco Line 1</option>
+            <option>Austin Energy Pod</option>
+          </select>
+          <button class="button secondary">Filters</button>
+          <button class="button secondary">Assets</button>
+          <button class="button">Engage Copilot</button>
         </div>
       </div>
     </section>
@@ -138,18 +147,18 @@ function renderKPISection() {
   return `
     <section class="section-block">
       <div class="section-title">
-        <h2>Control center snapshot</h2>
-        <span>Reliability, energy, and quality signals tracked in one view.</span>
+        <h2>Fleet snapshot</h2>
+        <span>Synth data to mirror the reference dashboard layout.</span>
       </div>
       <div class="kpi-grid">
         ${kpis
           .map(
             (kpi) => `
               <div class="kpi">
-                <span class="pill"><span class="dot"></span>${kpi.pill}</span>
+                <div class="label">${kpi.title}</div>
                 <div class="kpi-value">${kpi.value}</div>
                 <div class="kpi-label">${kpi.label}</div>
-                <div class="trend">${kpi.trend}</div>
+                <div class="trend ${kpi.direction === 'down' ? 'down' : kpi.direction === 'neutral' ? 'neutral' : ''}">${kpi.trend}</div>
               </div>
             `
           )
@@ -159,47 +168,69 @@ function renderKPISection() {
   `;
 }
 
-function renderOperationsSection() {
+function renderFleetAssets() {
   return `
-    <div class="section-block dual">
-      <div class="panel">
-        <div class="section-title">
-          <h3>Live activity</h3>
-          <span>Latest actions across services.</span>
-        </div>
-        <div class="activity-list">
-          ${activityFeed
-            .map(
-              (item) => `
-                <div class="activity">
+    <section class="section-block">
+      <div class="section-title">
+        <h2>Fleet assets</h2>
+        <span>Synthetic equipment signals spanning every service.</span>
+      </div>
+      <div class="asset-grid">
+        ${fleetAssets
+          .map(
+            (asset) => `
+              <article class="asset-card">
+                <div class="asset-header">
                   <div>
-                    <strong>${item.title}</strong>
-                    <div class="light">${item.detail}</div>
+                    <strong>${asset.name}</strong>
+                    <div class="asset-subtitle">${asset.location}</div>
                   </div>
-                  <span class="pill">${item.tag}</span>
+                  <span class="pill status ${asset.signal === 'Warning' ? 'warning' : ''}">
+                    <span class="dot"></span>${asset.status}
+                  </span>
                 </div>
-              `
-            )
-            .join('')}
-        </div>
+                <div class="asset-body">
+                  <div class="service-meta">
+                    <span class="tag">${asset.model}</span>
+                    <div class="legend-row">
+                      <span class="pill"><span class="dot green"></span>Normal</span>
+                      <span class="pill"><span class="dot amber"></span>Warning</span>
+                      <span class="pill"><span class="dot red"></span>Critical</span>
+                    </div>
+                  </div>
+                  <div class="asset-image">${asset.service}</div>
+                </div>
+                <div class="stat-grid">
+                  <div class="stat">
+                    <div class="label">Efficiency</div>
+                    <strong>${asset.stats.efficiency}</strong>
+                  </div>
+                  <div class="stat">
+                    <div class="label">Temp</div>
+                    <strong>${asset.stats.temp}</strong>
+                  </div>
+                  <div class="stat">
+                    <div class="label">Vibration</div>
+                    <strong>${asset.stats.vibration}</strong>
+                  </div>
+                  <div class="stat">
+                    <div class="label">RUL</div>
+                    <strong>${asset.stats.rul}</strong>
+                  </div>
+                </div>
+                <div class="chart-line"></div>
+                <div class="service-meta">
+                  <span class="light">3D Model</span>
+                  <div class="actions">
+                    <button class="button secondary" onclick="window.navigate('/service/${asset.serviceSlug}')">View details</button>
+                  </div>
+                </div>
+              </article>
+            `
+          )
+          .join('')}
       </div>
-      <div class="panel">
-        <div class="section-title">
-          <h3>Engagement blueprint</h3>
-          <span>Built-in playbooks for every rollout.</span>
-        </div>
-        <div class="list">
-          <div>• Discovery sprint with telemetry intake and OT/IT review</div>
-          <div>• Pilot with guardrails, SLA tracking, and clear success KPIs</div>
-          <div>• Full rollout: enablement for operators, audits, and support</div>
-        </div>
-        <div class="badge-row" style="margin-top:12px;">
-          <span class="badge">Safe by default</span>
-          <span class="badge">OT-native</span>
-          <span class="badge">Security-forward</span>
-        </div>
-      </div>
-    </div>
+    </section>
   `;
 }
 
@@ -207,6 +238,7 @@ function renderHome() {
   const content = `
     ${renderHero()}
     ${renderKPISection()}
+    ${renderFleetAssets()}
     <section class="section-block">
       <div class="section-title">
         <h2>Service command deck</h2>
@@ -214,7 +246,6 @@ function renderHome() {
       </div>
       ${renderServiceGrid(true)}
     </section>
-    ${renderOperationsSection()}
   `;
   renderShell(content, '/');
 }
